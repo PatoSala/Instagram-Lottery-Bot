@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer');
 
-let username = 'patosala998@gmail.com';
-let password = 'pato.com';
+let username;
+let password;
 let comments = ['@rochisala_', '@segundosala', '@salapato', '@panchosala227'];
 
 (async () => {
@@ -19,12 +19,14 @@ let comments = ['@rochisala_', '@segundosala', '@salapato', '@panchosala227'];
     await page.waitForNavigation();
 
     /* navigate to post and comment */
-    for (let i = 0; i < comments.length; i++) {
-        await page.goto('https://www.instagram.com/p/CWR2NkVrb4G/');
-        await page.waitForSelector('textarea');
-        await page.type('textarea', comments[i]);
-        await page.click('button[type="submit"]');
-        console.log(comments[i]);
+    for (let i = 0; i <= 5; i++) {
+        for (let j = 0; j < comments.length; j++) {
+            await page.goto('https://www.instagram.com/p/CWR2NkVrb4G/');
+            await page.waitForSelector('textarea');
+            await page.type('textarea', comments[j]);
+            await page.click('button[type="submit"]');
+            console.log(comments[j]);
+        }
     }
 
     await browser.close();
