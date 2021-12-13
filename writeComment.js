@@ -29,8 +29,8 @@ async function writeComment() {
                     {
                         type: 'number',
                         name: 'iterations',
-                        message: 'How many times do you want your comments to be posted? (write 0 to post one time each comment)',
-                        default: 0
+                        message: 'How many times do you want your comments to be posted? (write 1 to post one time each comment)',
+                        default: 1
                     }
                 ]).then(answer => {
                     data.iterations = answer.iterations;

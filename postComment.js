@@ -1,16 +1,20 @@
 const puppeteer = require('puppeteer');
 let data = require('./data');
 
+let delay = ms => new Promise(res => setTimeout(res, ms));
 totalComments = 0;
 
 function postComment() {
-    console.log('Ready to start');
+    console.log('');
+    console.log('Data collected. Ready to start');
+    console.log('');
 
 (async () => {
     console.log('Launching puppeteer..');
 
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({headless: false});
     const page = await browser.newPage();
+    page.setDefaultNavigationTimeout(0); 
 
     console.log('Launched puppeteer succesfully');
 
@@ -31,7 +35,7 @@ function postComment() {
     console.log('Posting Comments...');
 
     /* navigate to post and comment */
-    for (let i = 0; i <= data.iterations; i++) {
+    for (let i = 1; i <= data.iterations; i++) {
         for (let j = 0; j < data.comments.length; j++) {
             await page.goto(data.url);
             await page.waitForSelector('textarea');
@@ -39,6 +43,8 @@ function postComment() {
             await page.click('button[type="submit"]');
             console.log(data.comments[j]);
             totalComments++;
+            console.log(totalComments + ' comments posted.');
+            await delay(10000);
         }
     }
 
