@@ -2,6 +2,7 @@ const puppeteer = require('puppeteer');
 let data = require('./data');
 
 let delay = ms => new Promise(res => setTimeout(res, ms));
+let delayValues = [5000, 10000, 15000, 5790, 6768, 18950, 60000, 43890, 11245, 36578, 5054, 47888, 6893, 5876, 7890, 26897, 58795, 36598]
 totalComments = 0;
 
 function postComment() {
@@ -39,12 +40,14 @@ function postComment() {
         for (let j = 0; j < data.comments.length; j++) {
             await page.goto(data.url);
             await page.waitForSelector('textarea');
-            await page.type('textarea', data.comments[j]);
+            await page.type('textarea', data.comments[(Math.floor(Math.random() * data.comments.length))]); //choose random comment from list
             await page.click('button[type="submit"]');
             console.log(data.comments[j]);
             totalComments++;
             console.log(totalComments + ' comments posted.');
-            await delay(10000);
+            random = Math.floor(Math.random() * delayValues.length); // choose random delay value from delayValues list
+            console.log('Picked ' + delayValues[random]); // print delay value selected
+            await delay(delayValues[random]); // apply delay
         }
     }
 
