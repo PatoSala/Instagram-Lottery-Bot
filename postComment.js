@@ -4,6 +4,7 @@ let data = require('./data');
 let delay = ms => new Promise(res => setTimeout(res, ms));
 let delayValues = [10000, 15000, 18950, 60000, 43890, 11245, 36578, 47888, 7890, 26897, 58795, 36598, 120678, 128790]
 totalComments = 0;
+cooldownCounter = 0;
 
 function postComment() {
     console.log('');
@@ -41,16 +42,25 @@ function postComment() {
     /* start loop */
     for (let i = 1; i <= data.iterations; i++) {
         for (let j = 0; j < data.comments.length; j++) {
-            await page.waitForSelector('textarea');
-            randomComment = Math.floor(Math.random() * data.comments.length); //choose random comment position from comments list
-            await page.type('textarea', data.comments[randomComment]); 
-            await page.click('button[type="submit"]');
-            console.log(data.comments[randomComment]);
-            totalComments++;
-            console.log(totalComments + ' comments posted.');
-            random = Math.floor(Math.random() * delayValues.length); // choose random delay value from delayValues list
-            console.log('Picked ' + delayValues[random]); // print delay value selected
-            await delay(delayValues[random]); // apply delay
+            if (cooldownCounter === 10) {
+                console.log('waiting 30 mins');
+                await delay(900000); // 15 minutes cooldown
+                console.log('timer down, starting again...');
+                cooldownCounter = 0;
+            } else {
+                await page.waitForSelector('textarea');
+                randomComment = Math.floor(Math.random() * data.comments.length); //choose random comment position from comments list
+                await page.type('textarea', data.comments[randomComment]); 
+                await page.click('button[type="submit"]');
+                console.log(data.comments[randomComment]);
+                totalComments++;
+                cooldownCounter++;
+                console.log(totalComments + ' comments posted.');
+                
+                random = Math.floor(Math.random() * delayValues.length); // choose random delay value from delayValues list
+                console.log('Picked ' + delayValues[random]); // print delay value selected
+                await delay(delayValues[random]); // apply delay
+            }
         }
     }
 
