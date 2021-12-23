@@ -1,7 +1,7 @@
 const inquirer = require('inquirer');
 
 const data = require('./data');
-const writeComment = require('./writeComment');
+/* const writeComment = require('./writeComment'); */
 let postComment = require('./postComment');
 
 
@@ -32,11 +32,24 @@ async function prompt() {
                 }
             ]).then(async answer => {
                 data.url = answer.url;
+
+                await inquirer.prompt([
+                    {
+                        type: 'number',
+                        name: 'iterations',
+                        message: 'How many times do you want your comments to be posted? (write 1 to post one time each comment)',
+                        default: 1
+                    }
+                ]).then(answer => {
+                    data.iterations = answer.iterations;
+                    console.log(data);
+                });
     
-                await writeComment();
+                /* await writeComment(); */
             })
         });
     });
+
     postComment();
 
 }

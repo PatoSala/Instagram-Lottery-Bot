@@ -1,5 +1,26 @@
 const puppeteer = require('puppeteer');
 let data = require('./data');
+let tags = require('./tags');
+
+function createComment(array) {
+    let tagOne = array[Math.floor(Math.random() * array.length)];
+    let tagTwo = array[Math.floor(Math.random() * array.length)];
+
+    let comment = tagOne + ' ' + tagTwo;
+
+    return(comment);
+};
+
+function formatAMPM(date) {
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var ampm = hours >= 12 ? 'pm' : 'am';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? '0'+minutes : minutes;
+    var strTime = hours + ':' + minutes + ' ' + ampm;
+    return strTime;
+  }
 
 let delay = ms => new Promise(res => setTimeout(res, ms));
 let delayValues = [10000, 15000, 18950, 60000, 43890, 11245, 36578, 47888, 7890, 26897, 58795, 36598, 120678, 128790]
@@ -41,18 +62,18 @@ function postComment() {
 
     /* start loop */
     for (let i = 1; i <= data.iterations; i++) {
-        for (let j = 0; j < data.comments.length; j++) {
+        for (let j = 0; j < tags.length; j++) {
             if (cooldownCounter === 10) {
-                console.log('waiting 30 mins');
+                console.log(formatAMPM(new Date) + '; Waiting 15 mins');
                 await delay(900000); // 15 minutes cooldown
                 console.log('timer down, starting again...');
                 cooldownCounter = 0;
             } else {
                 await page.waitForSelector('textarea');
-                randomComment = Math.floor(Math.random() * data.comments.length); //choose random comment position from comments list
-                await page.type('textarea', data.comments[randomComment]); 
+                let randomComment = createComment(tags); //choose random comment
+                await page.type('textarea', randomComment); 
                 await page.click('button[type="submit"]');
-                console.log(data.comments[randomComment]);
+                console.log(randomComment);
                 totalComments++;
                 cooldownCounter++;
                 console.log(totalComments + ' comments posted.');
